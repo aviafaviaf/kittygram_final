@@ -44,6 +44,13 @@ jobs:
           ruff check backend/
 
       - name: Run backend tests
+        env:
+          POSTGRES_DB: kittygram
+          POSTGRES_USER: kitty
+          POSTGRES_PASSWORD: kitty123
+          DB_NAME: kittygram
+          DB_HOST: localhost
+          DB_PORT: 5432
         run: |
           cd backend
           python manage.py test
