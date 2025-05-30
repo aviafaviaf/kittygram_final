@@ -11,24 +11,23 @@ env:
   FRONTEND_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/kittygram_frontend
   GATEWAY_IMAGE: ${{ secrets.DOCKERHUB_USERNAME }}/kittygram_gateway
 
-services:
-  postgres:
-    image: postgres:13
-    env:
-      POSTGRES_DB: kittygram
-      POSTGRES_USER: kitty
-      POSTGRES_PASSWORD: kitty123
-    ports:
-      - 5432:5432
-    options: >-
-      --health-cmd pg_isready
-      --health-interval 10s
-      --health-timeout 5s
-      --health-retries 5
-
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_DB: kittygram
+          POSTGRES_USER: kitty
+          POSTGRES_PASSWORD: kitty123
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
       - name: Checkout repo
