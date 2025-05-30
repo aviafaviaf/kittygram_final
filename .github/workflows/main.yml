@@ -59,6 +59,7 @@ jobs:
 
       - name: Run backend tests
         env:
+          DB_ENGINE: django.db.backends.postgresql
           POSTGRES_DB: kittygram
           POSTGRES_USER: kitty
           POSTGRES_PASSWORD: kitty123
