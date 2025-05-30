@@ -1,27 +1,50 @@
-version: '3'
-
-volumes:
-  pg_data:
-  static:
+version: '3.9'
 
 services:
   db:
     image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_DB: kittygram
+      POSTGRES_USER: kitty
+      POSTGRES_PASSWORD: kitty123
     volumes:
       - pg_data:/var/lib/postgresql/data
+
   backend:
-    build: ./backend/
+    build:
+      context: ./backend
+    command: ./entrypoint.sh
     env_file: .env
+    depends_on:
+      - db
+    volumes:
+      - static:/app/static/
+      - media:/app/media/
+    expose:
+      - 8000
+
   frontend:
-    env_file: .env
-    build: ./frontend/
-    command: cp -r /app/build/. /static/
+    build:
+      context: ./frontend
     volumes:
-      - static:/static
+      - static:/app/build/
+    expose:
+      - 3000
+
   gateway:
-    build: ./nginx/
-    env_file: .env
+    build:
+      context: ./nginx
     ports:
-      - 9000:80
+      - "80:80"
+    depends_on:
+      - backend
+      - frontend
     volumes:
-      - static:/static
+      - static:/static/
+      - media:/media/
+
+volumes:
+  static:
+  media:
+  pg_data:
